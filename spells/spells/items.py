@@ -8,3 +8,6 @@ from scrapy.item import Item, Field
 
 class SpellItem(Item):
     title = Field()
+    level = Field()
+    tradition = Field()
+    execution_component = Field()
