@@ -2,7 +2,7 @@ from scrapy import Spider
 from scrapy.selector import Selector
 from spells.items import SpellItem
 
-# [ ] coletar tags
+# [ [ coletar SGV
 
 
 class StackSpider(Spider):
@@ -17,11 +17,11 @@ class StackSpider(Spider):
 
         for spell in spells:
             item = SpellItem()
-            item['title'] = spell.xpath('/html/body/div[1]/div/div/main/article/header/h1/text()').extract()[0]
-            item['level'] = spell.xpath('/html/body/div[1]/div/div/main/article/header/span/text()').extract()[0]
-            item['tradition'] = spell.xpath('/html/body/div[1]/div/div/main/article/section[2]/p/a/text()').extract()[0]            
-            item['execution_component'] = spell.xpath('/html/body/div[1]/div/div/main/article/section[2]/div[1]/ps/text()').extract()[0] 
-            print(item)
-            yield item
+            item['title'] = spell.xpath('/html/body/div[1]/div/div/main/article/header/h1/text()').get()
+            item['level'] = spell.xpath('/html/body/div[1]/div/div/main/article/header/span/text()').get()
+            item['tradition'] = spell.xpath('/html/body/div[1]/div/div/main/article/section[2]/p/a/text()').get()
+            item['description'] = spell.xpath('/html/body/div[1]/div/div/main/article/section[3]/p/text()').get()
+            item['details'] = spell.xpath('/html/body/div[1]/div/div/main/article/section[2]/div/p/text()').getall()
+            item['tags'] = spell.xpath('/html/body/div[1]/div/div/main/article/section[1]/p/a/text()').getall()
 
-            
+            yield item

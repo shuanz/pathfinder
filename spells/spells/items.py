@@ -11,3 +11,7 @@ class SpellItem(Item):
     level = Field()
     tradition = Field()
     execution_component = Field()
+    description = Field()
+    details = Field()
+    tags = Field()
+
