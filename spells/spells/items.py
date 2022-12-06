@@ -14,4 +14,5 @@ class SpellItem(Item):
     description = Field()
     details = Field()
     tags = Field()
+    action = Field()
 

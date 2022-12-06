@@ -23,5 +23,5 @@ class StackSpider(Spider):
             item['description'] = spell.xpath('/html/body/div[1]/div/div/main/article/section[3]/p/text()').get()
             item['details'] = spell.xpath('/html/body/div[1]/div/div/main/article/section[2]/div/p/text()').getall()
             item['tags'] = spell.xpath('/html/body/div[1]/div/div/main/article/section[1]/p/a/text()').getall()
-
+            item['action'] = spell.xpath('/html/body/div[1]/div/div/main/article/section[2]/div[1]/p/svg').getall()
             yield item
