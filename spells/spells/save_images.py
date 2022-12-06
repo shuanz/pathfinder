@@ -4,7 +4,7 @@ from PIL import ImageDraw
 from PIL import ImageFont
 import json
 
-#teste commit
+#teste commit3
 with open('spells.json', 'r') as spells_file:
     spells_data = json.load(spells_file)
     for spell in spells_data:
