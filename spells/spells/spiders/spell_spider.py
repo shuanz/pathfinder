@@ -19,7 +19,7 @@ class StackSpider(Spider):
             item = SpellItem()
             item['title'] = spell.xpath('/html/body/div[1]/div/div/main/article/header/h1/text()').get()
             item['level'] = spell.xpath('/html/body/div[1]/div/div/main/article/header/span/text()').get()
-            item['tradition'] = spell.xpath('/html/body/div[1]/div/div/main/article/section[2]/p/a/text()').get()
+            item['tradition'] = spell.xpath('//html/body/div[1]/div/div/main/article/section[2]/p/text()').getall()
             item['description'] = spell.xpath('/html/body/div[1]/div/div/main/article/section[3]/p/text()').get()
             item['details'] = spell.xpath('/html/body/div[1]/div/div/main/article/section[2]/div/p/text()').getall()
             item['tags'] = spell.xpath('/html/body/div[1]/div/div/main/article/section[1]/p/a/text()').getall()
