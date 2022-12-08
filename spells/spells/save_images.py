@@ -52,9 +52,12 @@ with open('spells.json', 'r') as spells_file:
         for i in range(1, tags_len):
             position = (x, 80)
             left, top, right, bottom = I1.textbbox(position, spell['tags'][i].upper(), font=tags_font)
-            I1.rectangle((left-5, top-5, right+5, bottom+5), fill=(114,18,20))
+            print("Left: {}".format(x))
+            print("X: {}".format(left))
+            I1.rectangle((left-5, 85-5, right+5, 103+5), fill=(114,18,20))
             I1.text(position, spell['tags'][i].upper(), font=tags_font, fill="white")
-            x += (len(spell['tags'][i].upper())+90)
+            #x += (len(spell['tags'][i].upper())+90)
+            x += (I1.textlength(spell['tags'][i].upper(), font=tags_font)+20)
 
         #Tradition
         if spell['tradition']:
