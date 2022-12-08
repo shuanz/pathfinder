@@ -45,8 +45,6 @@ with open('spells.json', 'r') as spells_file:
         for i in range(1, tags_len):
             position = (x, 80)
             left, top, right, bottom = I1.textbbox(position, spell['tags'][i].upper(), font=tags_font)
-            print("Left: {}".format(x))
-            print("X: {}".format(left))
             I1.rectangle((left-5, 85-5, right+5, 103+5), fill=(114,18,20))
             I1.text(position, spell['tags'][i].upper(), font=tags_font, fill="white")
             x += (I1.textlength(spell['tags'][i].upper(), font=tags_font)+20)
@@ -64,7 +62,13 @@ with open('spells.json', 'r') as spells_file:
                     action = Image.open("free_action.png").convert("RGBA")
                 case """<svg xmlns="http://www.w3.org/2000/svg" style="height:1em;width:2.03em;font-size:0.9em" viewbox="0 0 203 100"><defs></defs><path fill="black" d="M27 34l15 16-15 16-16-16zm0 0l15 16-15 16-16-16zm0 0l15 16-15 16-16-16zM54 6L33 27l23 23-23 23 21 21 44-44zm0 0L33 27l23 23-23 23 21 21 44-44zm0 0L33 27l23 23-23 23 21 21 44-44zm56 5L91 30l20 19-20 20 19 19 39-39zm51 8l-14 14 15 16-15 16 14 15 31-31z"></path></svg>""":
                     action = Image.open("three_actions.png").convert("RGBA")
-            img.paste(action, (30, 100), action)
+            width, height = action.size
+            print("Width: {}".format(width))
+            print("Height: {}".format(height))
+            newsize = (round(width/3), round(height/3))
+            action = action.resize(newsize)
+            img.paste(action, (30, 120), action)
+            I1.text((30, 120), "Execução ", font=stats_font, fill =(0, 0, 0))
         
         # #Details
         # details_len = len(spell['details'])
