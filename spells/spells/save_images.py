@@ -4,11 +4,13 @@ from PIL import ImageDraw
 from PIL import ImageFont
 from cairosvg import svg2png
 import json
+import itertools
 import textwrap
 
 #image size 500x689
 with open('spells.json', 'r') as spells_file:
     spells_data = json.load(spells_file)
+    tradition_name = ""
     for spell in spells_data:
         tradition_len = len(spell['tradition'])
         if spell['tradition']:
@@ -22,6 +24,7 @@ with open('spells.json', 'r') as spells_file:
                         img = Image.open('divine_basecard.jpeg')
                     case "Primal":
                         img = Image.open('primal_basecard.jpeg')
+                tradition_name=spell['tradition'][i]
         else:
             img = Image.open('focus_basecard.jpg')
         I1 = ImageDraw.Draw(img)
@@ -29,7 +32,7 @@ with open('spells.json', 'r') as spells_file:
         myFont = ImageFont.truetype('Arial Bold.ttf', 20)
         title_font = ImageFont.truetype('Mark Simonson  Proxima Nova Extra Condensed Bold TheFontsMaster.com.otf', 40)
         stats_font = ImageFont.truetype('Mark Simonson  Proxima Nova Extra Condensed Bold TheFontsMaster.com.otf', 30)
-        tags_font = ImageFont.truetype('Mark Simonson  Proxima Nova Extra Condensed Bold TheFontsMaster.com.otf', 20)
+        tags_font = ImageFont.truetype('Mark Simonson  Proxima Nova Extra Condensed Bold TheFontsMaster.com.otf', 15)
 
         # Title
         I1.text((30, 20), spell['title'].upper(), font=title_font, fill =(0, 0, 0))
@@ -42,10 +45,10 @@ with open('spells.json', 'r') as spells_file:
         #Tags
         tags_len = len(spell['tags'])
         x = 30
-        for i in range(1, tags_len):
+        for i in range(0, tags_len):
             position = (x, 80)
             left, top, right, bottom = I1.textbbox(position, spell['tags'][i].upper(), font=tags_font)
-            I1.rectangle((left-5, 85-5, right+5, 103+5), fill=(114,18,20))
+            I1.rectangle((left-5, 85-5, right+5, 95+5), fill=(114,18,20))
             I1.text(position, spell['tags'][i].upper(), font=tags_font, fill="white")
             x += (I1.textlength(spell['tags'][i].upper(), font=tags_font)+20)
         
@@ -63,19 +66,49 @@ with open('spells.json', 'r') as spells_file:
                 case """<svg xmlns="http://www.w3.org/2000/svg" style="height:1em;width:2.03em;font-size:0.9em" viewbox="0 0 203 100"><defs></defs><path fill="black" d="M27 34l15 16-15 16-16-16zm0 0l15 16-15 16-16-16zm0 0l15 16-15 16-16-16zM54 6L33 27l23 23-23 23 21 21 44-44zm0 0L33 27l23 23-23 23 21 21 44-44zm0 0L33 27l23 23-23 23 21 21 44-44zm56 5L91 30l20 19-20 20 19 19 39-39zm51 8l-14 14 15 16-15 16 14 15 31-31z"></path></svg>""":
                     action = Image.open("three_actions.png").convert("RGBA")
             width, height = action.size
-            print("Width: {}".format(width))
-            print("Height: {}".format(height))
             newsize = (round(width/3), round(height/3))
             action = action.resize(newsize)
-            img.paste(action, (30, 120), action)
             I1.text((30, 120), "Execução ", font=stats_font, fill =(0, 0, 0))
+            x = (I1.textlength("Execução ", font=stats_font)+30)
+            img.paste(action, (round(x), 120), action)
         
-        # #Details
-        # details_len = len(spell['details'])
-        # x = 10
-        # for i in range(1, details_len):    
-        #     I1.text((x, 90), spell['details'][i], font=myFont, fill =(0, 0, 0))
-        #     x += (len(spell['details'][i]))*10
+        #Details
+        details_len = len(spell['details'])
+        x = 30
+        y = 170
+        list_of_components = ['material', 'somático', 'verbal']
+        distance = ['metros', 'metro', 'toque', 'quilômetros', 'quilômetro']
+        area = ['explosão']
+        duração = ['sustentada', 'minuto', 'minutos', 'mês', 'dias', 'dias', 'meses', 'hora', 'horas']
+        alvo = ['criatura', 'criaturas', 'objeto', 'objetos']
+        if spell['details']:
+            for i in range(1, details_len):
+                new_string = spell['details'][i].replace(' ', ',').replace('.', ',').replace(';', ',')
+                list_of_spell_components = new_string.split(',')
+                result = [i for i in list_of_components if i in list_of_spell_components]
+                if result:
+                    I1.text((180, 120), spell['details'][i], font=stats_font, fill =(0, 0, 0))
+                else:
+                    result = [i for i in distance if i in list_of_spell_components]
+                    dif_area = [i for i in list_of_spell_components if i in area]
+                    dif_alvo = [i for i in list_of_spell_components if i in alvo]
+                    print(list_of_spell_components)
+                    print(dif_alvo)
+                    if result and not dif_area and not dif_alvo:
+                        I1.text((30, 150), "Distância {}".format(spell['details'][i]), font=stats_font, fill =(0, 0, 0))
+                    elif result and dif_area:
+                        I1.text((30, 180), "Área {}".format(spell['details'][i]), font=stats_font, fill =(0, 0, 0))
+                result = [i for i in duração if i in list_of_spell_components]
+                if result:
+                    I1.text((30, 210),"Duração {}".format(spell['details'][i]), font=stats_font, fill =(0, 0, 0))
+        # for i in range(1, details_len):
+        #     match i:
+        #         case 1:
+        #             I1.text((180, 120), spell['details'][i], font=stats_font, fill =(0, 0, 0))
+        #         case 2:
+        #             I1.text((x, y), spell['details'][i], font=stats_font, fill =(0, 0, 0))
+            #x += (len(spell['details'][i]))
+            y += 30
 
         # #Description
         # if spell['description']:
@@ -88,5 +121,4 @@ with open('spells.json', 'r') as spells_file:
 
   
 
-        img.save("images/{}.png".format(spell['title']))
-
+        img.save("images/{}_{}.png".format(spell['title'],tradition_name))
